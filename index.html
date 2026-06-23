@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Dompet.ku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#06080e">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dompet.ku">
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ HEADER ══ -->
+  <header id="hdr">
+    <div>
+      <div class="logo"><span class="logo-g">Dompet</span><span class="logo-d">.ku</span></div>
+      <div id="h-greet" style="font-size:10px;color:var(--muted);margin-top:1px;"></div>
+    </div>
+    <div class="hdr-right">
+      <div id="h-uname" style="font-size:11px;color:var(--dim);"></div>
+      <div id="h-av" onclick="goPage('settings')"
+        style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;cursor:pointer;flex-shrink:0;"></div>
+    </div>
+  </header>
+
+  <!-- ══ PAGE AREA ══ -->
+  <div id="page-area">
+
+    <!-- ── ONBOARD ── -->
+    <div id="pg-onboard" class="page" style="display:none">
+      <div style="font-size:52px;margin-bottom:18px;">💰</div>
+      <div style="font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;">Dompet<span style="color:var(--mint);">.ku</span></div>
+      <div style="font-size:14px;color:var(--dim);line-height:1.7;max-width:280px;margin-bottom:30px;">
+        Catat, cari, dan kelola keuangan pribadimu dengan mudah.<br>Pemasukan, pengeluaran, hutang, dan target tabungan dalam satu tempat.
+      </div>
+      <div style="width:100%;max-width:300px;">
+        <button class="btn btn-gold" onclick="doneOnboard()">Mulai Sekarang →</button>
+      </div>
+    </div>
+
+    <!-- ── LOGIN ── -->
+    <div id="pg-login" class="page" style="display:none">
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="font-size:38px;margin-bottom:8px;">💰</div>
+        <div style="font-size:20px;font-weight:800;">Dompet<span style="color:var(--mint);">.ku</span></div>
+      </div>
+      <div class="login-card">
+        <div class="ltabs">
+          <button class="ltab on" id="lt-in" onclick="lTab('in')">Masuk</button>
+          <button class="ltab" id="lt-reg" onclick="lTab('reg')">Daftar</button>
+        </div>
+        <div class="srow hidden" id="l-name-row"><label class="lbl">Nama yang Ingin Dipakai</label><input class="inp" id="l-name" type="text" placeholder="Nama panggilan kamu" autocomplete="name" maxlength="40"></div>
+        <div class="srow"><label class="lbl">Email</label><input class="inp" id="l-user" type="email" placeholder="nama@email.com" autocomplete="email" autocapitalize="none" inputmode="email"></div>
+        <div class="srow"><label class="lbl">Password</label><input class="inp" id="l-pw" type="password" placeholder="••••••" autocomplete="current-password"></div>
+        <div class="srow hidden" id="l-pw2-row"><label class="lbl">Konfirmasi Password</label><input class="inp" id="l-pw2" type="password" placeholder="Ulangi password" autocomplete="new-password"></div>
+        <button class="btn btn-gold" id="l-btn" onclick="doLogin()">Masuk</button>
+        <div style="text-align:center;margin-top:12px;">
+          <span class="link" style="font-size:12px;" onclick="doForgotPassword()">Lupa password?</span>
+        </div>
+        <div class="info-box">Data tersimpan aman di cloud & otomatis tersinkron di semua perangkat yang login dengan akun yang sama.</div>
+      </div>
+    </div>
+
+    <!-- ── BERANDA ── -->
+    <div id="pg-beranda" class="page" style="display:none">
+      <div style="height:14px;"></div>
+
+      <!-- Hero card -->
+      <div class="hero">
+        <div class="hero-eyebrow">Total Saldo</div>
+        <div class="hero-balance" id="b-total">Rp 0</div>
+        <div class="hero-meta" id="b-meta"></div>
+        <div class="hero-month" id="b-month"></div>
+        <div class="hero-row">
+          <div class="hstat">
+            <div class="hstat-label">Pemasukan</div>
+            <div class="hstat-val" style="color:var(--mint);" id="b-masuk">0</div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-label">Pengeluaran</div>
+            <div class="hstat-val" style="color:var(--rose);" id="b-keluar">0</div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-label">Saldo Bersih</div>
+            <div class="hstat-val" id="b-net">0</div>
+          </div>
+        </div>
+        <div id="b-pct" class="hero-pct"></div>
+      </div>
+
+      <!-- Wallet cards -->
+      <div class="sec">
+        <span class="sec-t">Dompet</span>
+        <span class="sec-a" onclick="openWalletMgr()">Kelola ›</span>
+      </div>
+      <div class="wcard-scroll" id="b-wallets"></div>
+
+      <!-- Tap Nabung button -->
+      <button class="btn btn-mint" style="margin-bottom:14px;" onclick="openTap()">⚡ Tabung Sekarang</button>
+
+      <!-- Target tabungan -->
+      <div class="sec">
+        <span class="sec-t">Target Tabungan</span>
+        <span class="sec-a" onclick="openTargetMgr()">Kelola ›</span>
+      </div>
+      <div id="b-targets"></div>
+
+      <!-- Transaksi terbaru -->
+      <div class="sec">
+        <span class="sec-t">Transaksi Terbaru</span>
+        <span class="sec-a" onclick="goPage('transaksi')">Semua ›</span>
+      </div>
+      <div id="b-recent"></div>
+      <div style="height:8px;"></div>
+    </div>
+
+    <!-- ── TRANSAKSI ── -->
+    <div id="pg-transaksi" class="page" style="display:none">
+      <div style="height:12px;"></div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <svg class="search-ico" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+        </svg>
+        <input class="inp" id="t-q" type="text" placeholder="Cari transaksi, kategori, catatan..." oninput="renderTrx()">
+      </div>
+
+      <!-- Period preset chips -->
+      <div class="chips">
+        <div class="chip period-chip on" id="tpc-month" onclick="setPeriodPreset('month')">Bulan Ini</div>
+        <div class="chip period-chip" id="tpc-today" onclick="setPeriodPreset('today')">Hari Ini</div>
+        <div class="chip period-chip" id="tpc-week" onclick="setPeriodPreset('week')">Minggu Ini</div>
+        <div class="chip period-chip" id="tpc-year" onclick="setPeriodPreset('year')">Tahun Ini</div>
+        <div class="chip period-chip" id="tpc-all" onclick="setPeriodPreset('all')">Semua</div>
+        <div class="chip period-chip" id="tpc-custom" onclick="setPeriodPreset('custom')">Kustom</div>
+      </div>
+
+      <!-- Month navigation (only visible in 'month' mode) -->
+      <div class="period-nav" id="t-month-nav">
+        <button class="pnav-btn" onclick="tPmove(-1)">‹</button>
+        <div class="pnav-label" id="t-period"></div>
+        <button class="pnav-btn" onclick="tPmove(1)">›</button>
+      </div>
+
+      <!-- Custom date range -->
+      <div id="t-date-range" class="hidden g2" style="margin-bottom:10px;">
+        <div><label class="lbl">Dari</label><input class="inp" type="date" id="t-date-from" oninput="renderTrx()"></div>
+        <div><label class="lbl">Sampai</label><input class="inp" type="date" id="t-date-to" oninput="renderTrx()"></div>
+      </div>
+
+      <!-- Wallet chips -->
+      <div class="chips" id="t-wchips"></div>
+      <!-- Category chips -->
+      <div class="chips" id="t-cchips"></div>
+
+      <!-- Summary stats -->
+      <div class="stat2" id="t-summary"></div>
+
+      <!-- Transaction list -->
+      <div id="t-list"></div>
+    </div>
+
+    <!-- ── LAPORAN ── -->
+    <div id="pg-laporan" class="page" style="display:none">
+      <div style="height:12px;"></div>
+
+      <!-- Period nav -->
+      <div class="period-nav" style="margin-bottom:14px;">
+        <button class="pnav-btn" onclick="rptMv(-1)">‹</button>
+        <div class="pnav-label" id="rpt-period"></div>
+        <button class="pnav-btn" onclick="rptMv(1)">›</button>
+      </div>
+
+      <!-- Monthly overview card -->
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Ringkasan Bulan Ini</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div class="stat2-col"><div class="s2-lbl">Pemasukan</div><div class="s2-val" style="color:var(--mint);" id="rpt-masuk">0</div></div>
+          <div class="stat2-col"><div class="s2-lbl">Pengeluaran</div><div class="s2-val" style="color:var(--rose);" id="rpt-keluar">0</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="stat2-col"><div class="s2-lbl">Saldo Bersih</div><div class="s2-val" id="rpt-net">0</div></div>
+          <div class="stat2-col"><div class="s2-lbl">Efisiensi</div><div class="s2-val" id="rpt-pct" style="font-size:11px;">-</div></div>
+        </div>
+      </div>
+
+      <!-- Bar chart -->
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:12px;font-weight:700;">Tren Bulanan</div>
+          <div style="display:flex;gap:5px;">
+            <div class="chip rr-chip on" style="padding:3px 9px;font-size:10px;" onclick="setRR(3)">3 Bln</div>
+            <div class="chip rr-chip" style="padding:3px 9px;font-size:10px;" onclick="setRR(6)">6 Bln</div>
+            <div class="chip rr-chip" style="padding:3px 9px;font-size:10px;" onclick="setRR(12)">1 Thn</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--dim);"><div style="width:8px;height:8px;border-radius:2px;background:var(--mint);"></div>Masuk</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--dim);"><div style="width:8px;height:8px;border-radius:2px;background:var(--rose);"></div>Keluar</div>
+        </div>
+        <div class="bar-chart" id="rpt-bars"></div>
+      </div>
+
+      <!-- Donut chart -->
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:12px;">Pengeluaran per Kategori</div>
+        <div id="rpt-donut"></div>
+      </div>
+
+      <!-- Insights -->
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px;">💡 Insight</div>
+        <div id="rpt-insights"></div>
+      </div>
+    </div>
+
+    <!-- ── UTANG ── -->
+    <div id="pg-utang" class="page" style="display:none">
+      <div style="height:12px;"></div>
+
+      <!-- Mode switch -->
+      <div style="display:flex;gap:7px;margin-bottom:14px;">
+        <button id="ut-mode-saya" class="wt-btn on" onclick="utMode='saya';renderUtang()">Hutang Saya</button>
+        <button id="ut-mode-piutang" class="wt-btn" onclick="utMode='piutang';renderUtang()">Piutang</button>
+      </div>
+
+      <!-- Overview -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+        <div class="stat2-col"><div class="s2-lbl">Total Hutang</div><div class="s2-val" style="color:var(--rose);" id="ut-total-hutang">0</div></div>
+        <div class="stat2-col"><div class="s2-lbl">Piutang Aktif</div><div class="s2-val" style="color:var(--mint);" id="ut-total-piutang">0</div></div>
+      </div>
+
+      <!-- Filter chips -->
+      <div class="chips">
+        <div class="chip on" onclick="setUtF('all')">Semua</div>
+        <div class="chip" onclick="setUtF('aktif')">Aktif</div>
+        <div class="chip" onclick="setUtF('lunas')">Lunas</div>
+      </div>
+
+      <button class="btn btn-gold" style="margin-bottom:14px;" onclick="openAddUtang()">＋ Tambah Hutang / Piutang</button>
+      <div id="ut-list"></div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div id="pg-settings" class="page" style="display:none">
+      <div style="height:14px;"></div>
+
+      <!-- Profile card -->
+      <div class="card" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div id="s-av" style="width:44px;height:44px;border-radius:50%;background:var(--gold);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;flex-shrink:0;"></div>
+        <div>
+          <div id="s-name" style="font-size:15px;font-weight:800;"></div>
+          <div id="s-email" style="font-size:11px;color:var(--mint);margin-top:1px;"></div>
+          <div id="s-sub" style="font-size:12px;color:var(--muted);margin-top:1px;"></div>
+        </div>
+      </div>
+
+      <div class="settings-section-label">Keuangan</div>
+      <div class="menu-group">
+        <div class="menu-item" onclick="openWalletMgr()">
+          <div class="m-ico" style="background:rgba(242,201,76,.12);">👛</div>
+          <div><div class="m-lbl">Kelola Dompet</div><div class="m-sub" id="s-wallet-sub"></div></div>
+          <span class="m-arr">›</span>
+        </div>
+        <div class="menu-item" onclick="openTargetMgr()">
+          <div class="m-ico" style="background:rgba(74,222,216,.12);">🎯</div>
+          <div><div class="m-lbl">Target Tabungan</div><div class="m-sub">Pantau progres tabungan</div></div>
+          <span class="m-arr">›</span>
+        </div>
+        <div class="menu-item" onclick="openRecurMgr()">
+          <div class="m-ico" style="background:rgba(139,124,248,.12);">🔄</div>
+          <div><div class="m-lbl">Transaksi Berulang</div><div class="m-sub" id="s-recur-sub">0 transaksi aktif</div></div>
+          <span class="m-arr">›</span>
+        </div>
+        <div class="menu-item" onclick="openSplitSet()">
+          <div class="m-ico" style="background:rgba(82,199,245,.12);">⚖️</div>
+          <div><div class="m-lbl">Pengaturan Split</div><div class="m-sub" id="s-split-sub"></div></div>
+          <span class="m-arr">›</span>
+        </div>
+      </div>
+
+      <div class="settings-section-label">Keamanan</div>
+      <div class="menu-group">
+        <div class="menu-item" onclick="show('ov-change-pw')">
+          <div class="m-ico" style="background:rgba(245,166,35,.12);">🔑</div>
+          <div><div class="m-lbl">Ubah Password</div><div class="m-sub">Ganti password akun</div></div>
+          <span class="m-arr">›</span>
+        </div>
+      </div>
+
+      <div class="settings-section-label">Data</div>
+      <div class="menu-group">
+        <div class="menu-item" onclick="doExportJSON()">
+          <div class="m-ico" style="background:rgba(74,222,216,.12);">📤</div>
+          <div><div class="m-lbl">Ekspor Data (JSON)</div><div class="m-sub">Backup seluruh data</div></div>
+          <span class="m-arr">›</span>
+        </div>
+        <div class="menu-item" onclick="doExportCSV()">
+          <div class="m-ico" style="background:rgba(139,124,248,.12);">📊</div>
+          <div><div class="m-lbl">Ekspor ke CSV</div><div class="m-sub">Buka di Excel / Sheets</div></div>
+          <span class="m-arr">›</span>
+        </div>
+        <div class="menu-item" onclick="el('import-file').click()">
+          <div class="m-ico" style="background:rgba(242,201,76,.12);">📥</div>
+          <div><div class="m-lbl">Impor Data</div><div class="m-sub">Pulihkan dari backup JSON</div></div>
+          <span class="m-arr">›</span>
+        </div>
+        <input type="file" id="import-file" accept=".json" class="hidden" onchange="doImport()">
+      </div>
+
+      <div class="settings-section-label">Akun</div>
+      <div class="menu-group">
+        <div class="menu-item" onclick="openDeleteAccount()">
+          <div class="m-ico" style="background:rgba(242,107,107,.12);">🗑️</div>
+          <div><div class="m-lbl">Hapus Akun</div><div class="m-sub">Hapus akun & seluruh data secara permanen</div></div>
+          <span class="m-arr">›</span>
+        </div>
+        <div class="menu-item" onclick="openEditName()">
+          <div class="m-ico" style="background:rgba(242,201,76,.12);">✏️</div>
+          <div><div class="m-lbl">Ubah Nama Tampilan</div><div class="m-sub" id="s-name-sub"></div></div>
+          <span class="m-arr">›</span>
+        </div>
+        <div class="menu-item" onclick="doLogout()">
+          <div class="m-ico" style="background:rgba(242,107,107,.12);">🚪</div>
+          <div><div class="m-lbl">Keluar</div><div class="m-sub">Kembali ke halaman login</div></div>
+          <span class="m-arr">›</span>
+        </div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+
+  </div><!-- end page-area -->
+
+  <!-- ══ BOTTOM NAV ══ -->
+  <nav id="nav" class="hidden">
+    <div class="tab on" id="tab-beranda" onclick="goPage('beranda')">
+      <div class="tab-ico">🏠</div><div class="tab-lbl">Beranda</div>
+    </div>
+    <div class="tab" id="tab-transaksi" onclick="goPage('transaksi')">
+      <div class="tab-ico">📋</div><div class="tab-lbl">Transaksi</div>
+    </div>
+    <div class="tab-plus" onclick="openPicker()">
+      <div class="tab-plus-btn">＋</div>
+      <div class="tab-lbl">Catat</div>
+    </div>
+    <div class="tab" id="tab-laporan" onclick="goPage('laporan')">
+      <div class="tab-ico">📊</div><div class="tab-lbl">Laporan</div>
+    </div>
+    <div class="tab" id="tab-utang" onclick="goPage('utang')">
+      <div class="tab-ico">💸</div><div class="tab-lbl">Utang</div>
+    </div>
+  </nav>
+
+</div><!-- end app -->
+
+<!-- ════════════════════════════════════════
+     OVERLAYS
+════════════════════════════════════════ -->
+
+<!-- ── ADD TRANSACTION ── -->
+<div id="ov-picker" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div class="sh-title">Catat Transaksi</div>
+        <button class="sh-x" onclick="hide('ov-picker')">×</button>
+      </div>
+      <!-- Tipe -->
+      <div class="wp-type" style="margin-bottom:12px;">
+        <button id="p-keluar" class="wt-btn on" onclick="setPickerType('keluar')">— Keluar</button>
+        <button id="p-masuk"  class="wt-btn" onclick="setPickerType('masuk')">＋ Masuk</button>
+        <button id="p-transfer" class="wt-btn" onclick="setPickerType('transfer')">⇄ Transfer</button>
+      </div>
+      <!-- Wallet grid -->
+      <div class="srow">
+        <label class="lbl">Dompet</label>
+        <div class="pw-grid" id="p-wallets"></div>
+      </div>
+      <!-- Transfer to -->
+      <div class="srow hidden" id="trx-to-row">
+        <label class="lbl">Ke Dompet</label>
+        <select class="inp" id="trx-to"></select>
+      </div>
+      <!-- Fields -->
+      <div class="srow"><label class="lbl">Keterangan</label><input class="inp" id="trx-ket" type="text" placeholder="Makan siang, Gaji, dll..."></div>
+      <div class="srow"><label class="lbl">Jumlah (Rp)</label><input class="inp" id="trx-nom" type="number" placeholder="0" inputmode="numeric"></div>
+      <div class="srow">
+        <label class="lbl">Kategori</label>
+        <select class="inp" id="trx-cat"><option value="">— Pilih Kategori —</option>
+          <option value="makanan">🍜 Makanan</option>
+          <option value="transport">🚗 Transport</option>
+          <option value="belanja">🛍️ Belanja</option>
+          <option value="hiburan">🎮 Hiburan</option>
+          <option value="kesehatan">💊 Kesehatan</option>
+          <option value="pendidikan">📚 Pendidikan</option>
+          <option value="tagihan">💡 Tagihan</option>
+          <option value="modal">💼 Modal</option>
+          <option value="gaji">💰 Gaji</option>
+          <option value="lainnya">📦 Lainnya</option>
+        </select>
+      </div>
+      <div class="srow"><label class="lbl">Catatan (Opsional)</label><input class="inp" id="trx-note" type="text" placeholder="Makan siang bersama teman..."></div>
+      <div class="srow"><label class="lbl">Tanggal</label><input class="inp" id="trx-date" type="date"></div>
+      <div id="trx-split-hint" class="hidden" style="font-size:11px;color:var(--dim);margin-bottom:10px;">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+          <input type="checkbox" id="trx-split" style="accent-color:var(--gold);">
+          Split profit ke dompet lain otomatis
+        </label>
+      </div>
+      <button class="btn btn-gold" onclick="confirmTrx()">Simpan Transaksi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT TRANSACTION ── -->
+<div id="ov-edit" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div>
+          <div class="sh-title">Detail Transaksi</div>
+          <div class="sh-sub" id="e-date-info"></div>
+        </div>
+        <button class="sh-x" onclick="hide('ov-edit')">×</button>
+      </div>
+      <div id="e-recur-info" style="margin-bottom:10px;"></div>
+      <div class="srow"><label class="lbl">Keterangan</label><input class="inp" id="e-ket" type="text"></div>
+      <div class="srow"><label class="lbl">Jumlah (Rp)</label><input class="inp" id="e-nom" type="number" inputmode="numeric"></div>
+      <div class="srow">
+        <label class="lbl">Kategori</label>
+        <select class="inp" id="e-cat"><option value="">— Pilih Kategori —</option>
+          <option value="makanan">🍜 Makanan</option>
+          <option value="transport">🚗 Transport</option>
+          <option value="belanja">🛍️ Belanja</option>
+          <option value="hiburan">🎮 Hiburan</option>
+          <option value="kesehatan">💊 Kesehatan</option>
+          <option value="pendidikan">📚 Pendidikan</option>
+          <option value="tagihan">💡 Tagihan</option>
+          <option value="modal">💼 Modal</option>
+          <option value="gaji">💰 Gaji</option>
+          <option value="lainnya">📦 Lainnya</option>
+        </select>
+      </div>
+      <div class="srow"><label class="lbl">Catatan (Opsional)</label><input class="inp" id="e-note" type="text" placeholder="Tambah catatan..."></div>
+      <input type="hidden" id="e-id">
+      <div class="g2" style="margin-bottom:8px;">
+        <button class="btn btn-gold" onclick="confirmEdit()">Simpan</button>
+        <button class="btn btn-ghost" onclick="hide('ov-edit')">Batal</button>
+      </div>
+      <button class="btn btn-rose" onclick="deleteEditTrx()">Hapus Transaksi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TAP NABUNG ── -->
+<div id="ov-tap" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div><div class="sh-title">⚡ Tabung Sekarang</div><div class="sh-sub">Hemat lebih mudah</div></div>
+        <button class="sh-x" onclick="hide('ov-tap')">×</button>
+      </div>
+      <div class="srow"><label class="lbl">Nominal (Rp)</label><input class="inp" id="tap-nom" type="number" inputmode="numeric" placeholder="10000"></div>
+      <div class="qchips">
+        <button class="qchip" onclick="el('tap-nom').value=5000">5rb</button>
+        <button class="qchip" onclick="el('tap-nom').value=10000">10rb</button>
+        <button class="qchip" onclick="el('tap-nom').value=20000">20rb</button>
+        <button class="qchip" onclick="el('tap-nom').value=50000">50rb</button>
+        <button class="qchip" onclick="el('tap-nom').value=100000">100rb</button>
+      </div>
+      <div class="srow"><label class="lbl">Ke Dompet</label><div style="display:flex;gap:7px;" id="tap-wallets"></div></div>
+      <button class="btn btn-mint" onclick="confirmTap()">Tabung Sekarang ⚡</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SPLIT PROFIT ── -->
+<div id="ov-split" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div><div class="sh-title">Split Profit</div><div class="sh-sub" id="sp-ket"></div></div>
+        <button class="sh-x" onclick="hide('ov-split')">×</button>
+      </div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:14px;" id="sp-nom"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+        <div class="stat2-col"><div class="s2-lbl">Modal</div><div class="s2-val" style="color:var(--gold);" id="sp-m-nom"></div></div>
+        <div class="stat2-col"><div class="s2-lbl">Pribadi</div><div class="s2-val" style="color:var(--mint);" id="sp-p-nom"></div></div>
+      </div>
+      <div class="g2">
+        <button class="btn btn-gold" onclick="doSplit()">Split Sekarang</button>
+        <button class="btn btn-ghost" onclick="hide('ov-split')">Lewati</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── WALLET MANAGER ── -->
+<div id="ov-wallet-mgr" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div><div class="sh-title">Kelola Dompet</div></div>
+        <button class="sh-x" onclick="hide('ov-wallet-mgr')">×</button>
+      </div>
+      <div id="wl-list" style="margin-bottom:12px;"></div>
+      <button class="btn btn-gold" onclick="openAddWallet()">＋ Tambah Dompet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── WALLET FORM ── -->
+<div id="ov-wallet-form" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div class="sh-title" id="wl-form-title">Tambah Dompet</div>
+        <button class="sh-x" onclick="hide('ov-wallet-form')">×</button>
+      </div>
+      <div class="srow"><label class="lbl">Nama Dompet</label><input class="inp" id="wf-name" type="text" placeholder="Tabungan, Usaha, dll..."></div>
+      <div class="srow">
+        <label class="lbl">Tipe</label>
+        <select class="inp" id="wf-type">
+          <option value="regular">Reguler</option>
+          <option value="saving">Tabungan</option>
+          <option value="biz">Usaha / Bisnis</option>
+        </select>
+      </div>
+      <div class="srow"><label class="lbl">Saldo Awal (Rp)</label><input class="inp" id="wf-saldo" type="number" placeholder="0" inputmode="numeric"></div>
+      <div class="srow"><label class="lbl">Ikon</label><div class="ico-grid" id="wf-icons"></div></div>
+      <div class="srow"><label class="lbl">Warna</label><div class="col-grid" id="wf-colors"></div></div>
+      <div class="g2" style="margin-bottom:8px;">
+        <button class="btn btn-gold" onclick="confirmWallet()">Simpan</button>
+        <button class="btn btn-ghost" onclick="hide('ov-wallet-form')">Batal</button>
+      </div>
+      <button id="wf-del" class="btn btn-rose hidden" onclick="deleteWallet()">Hapus Dompet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TARGET MANAGER ── -->
+<div id="ov-target-mgr" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div><div class="sh-title">Target Tabungan</div></div>
+        <button class="sh-x" onclick="hide('ov-target-mgr')">×</button>
+      </div>
+      <div id="target-list" style="margin-bottom:12px;"></div>
+      <button class="btn btn-gold" onclick="openAddTarget()">＋ Tambah Target</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TARGET FORM ── -->
+<div id="ov-target-form" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div class="sh-title" id="tg-form-title">Tambah Target</div>
+        <button class="sh-x" onclick="hide('ov-target-form')">×</button>
+      </div>
+      <div class="srow"><label class="lbl">Nama Target</label><input class="inp" id="tg-name" type="text" placeholder="Motor, Liburan, dll..."></div>
+      <div class="srow"><label class="lbl">Target (Rp)</label><input class="inp" id="tg-target" type="number" placeholder="0" inputmode="numeric"></div>
+      <div class="srow"><label class="lbl">Dompet</label><select class="inp" id="tg-wallet"></select></div>
+      <div class="g2">
+        <div class="srow"><label class="lbl">Ikon</label><input class="inp" id="tg-icon" type="text" placeholder="🎯" style="font-size:20px;text-align:center;"></div>
+        <div class="srow"><label class="lbl">Warna</label><input class="inp" id="tg-col" type="color" style="height:44px;padding:4px;"></div>
+      </div>
+      <div class="g2" style="margin-bottom:8px;">
+        <button class="btn btn-gold" onclick="confirmTarget()">Simpan</button>
+        <button class="btn btn-ghost" onclick="hide('ov-target-form')">Batal</button>
+      </div>
+      <button id="tg-del" class="btn btn-rose hidden" onclick="deleteTarget()">Hapus Target</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── UTANG / PIUTANG ── -->
+<div id="ov-add-utang" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div class="sh-title">Tambah Hutang / Piutang</div>
+        <button class="sh-x" onclick="hide('ov-add-utang')">×</button>
+      </div>
+      <div class="wp-type" style="margin-bottom:12px;">
+        <button id="ut-jenis-saya" class="wt-btn on" onclick="el('ut-jenis-saya').classList.add('on');el('ut-jenis-piutang').classList.remove('on')">Hutang Saya</button>
+        <button id="ut-jenis-piutang" class="wt-btn" onclick="el('ut-jenis-piutang').classList.add('on');el('ut-jenis-saya').classList.remove('on')">Piutang</button>
+      </div>
+      <div class="srow"><label class="lbl">Nama Orang</label><input class="inp" id="ut-person" type="text" placeholder="Nama teman, keluarga..."></div>
+      <div class="srow"><label class="lbl">Keterangan</label><input class="inp" id="ut-ket" type="text" placeholder="Pinjam untuk apa..."></div>
+      <div class="srow"><label class="lbl">Jumlah (Rp)</label><input class="inp" id="ut-nom" type="number" placeholder="0" inputmode="numeric"></div>
+      <div class="srow"><label class="lbl">Catatan (Opsional)</label><input class="inp" id="ut-note" type="text" placeholder="Catatan tambahan..."></div>
+      <div class="srow"><label class="lbl">Tanggal</label><input class="inp" id="ut-date" type="date"></div>
+      <button class="btn btn-gold" onclick="confirmUtang()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BAYAR ── -->
+<div id="ov-bayar" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div><div class="sh-title">Catat Pembayaran</div><div class="sh-sub" id="bayar-ket"></div></div>
+        <button class="sh-x" onclick="hide('ov-bayar')">×</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Sisa: <span id="bayar-sisa" style="color:var(--rose);font-weight:700;"></span></div>
+      <div class="srow"><label class="lbl">Jumlah Dibayar (Rp)</label><input class="inp" id="bayar-nom" type="number" placeholder="0" inputmode="numeric"></div>
+      <div class="g2">
+        <button class="btn btn-gold" onclick="confirmBayar()">Catat Pembayaran</button>
+        <button class="btn btn-ghost" onclick="hide('ov-bayar')">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SPLIT SETTINGS ── -->
+<div id="ov-split-set" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div><div class="sh-title">Pengaturan Split Profit</div></div>
+        <button class="sh-x" onclick="hide('ov-split-set')">×</button>
+      </div>
+      <div class="srow">
+        <label class="lbl">Modal (%)</label>
+        <input class="inp sl" id="ss-modal" type="range" min="0" max="100" step="5" oninput="onSS('m',this.value)">
+      </div>
+      <div class="srow">
+        <label class="lbl">Pribadi (%)</label>
+        <input class="inp sl" id="ss-priv" type="range" min="0" max="100" step="5" oninput="onSS('p',this.value)">
+      </div>
+      <div class="split-preview" id="ss-preview">Modal 50% / Pribadi 50%</div>
+      <button class="btn btn-gold" onclick="saveSplit()">Simpan Pengaturan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CHANGE PASSWORD ── -->
+<div id="ov-delete-confirm" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body" style="text-align:center;">
+      <div style="font-size:32px;margin-bottom:8px;">⚠️</div>
+      <div class="sh-title" style="margin-bottom:8px;">Hapus Akun Dompet.ku?</div>
+      <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:14px;text-align:left;">
+        Akun beserta <b>seluruh data</b> (transaksi, dompet, utang, target) akan terjadwal hapus permanen dalam <b>30 hari</b>.
+        <br><br>
+        Selama 30 hari itu kamu masih bisa membatalkan, cukup login kembali.
+      </div>
+      <div class="srow" style="text-align:left;">
+        <label class="lbl">Ketik "HAPUS" untuk konfirmasi</label>
+        <input class="inp" id="del-confirm-type" type="text" placeholder="HAPUS" autocapitalize="characters" oninput="checkDeleteTypedConfirm()">
+      </div>
+      <div class="g2">
+        <button class="btn btn-ghost" onclick="closeDeleteAccount()">Batal</button>
+        <button class="btn btn-rose" id="del-confirm-btn" onclick="confirmDeleteAccountStep1()">Ya, Hapus Akun Saya</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ov-deletion-status" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body" style="text-align:center;">
+      <div style="font-size:32px;margin-bottom:8px;">🗑️</div>
+      <div class="sh-title" id="del-status-title" style="margin-bottom:8px;"></div>
+      <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:18px;" id="del-status-msg"></div>
+      <div class="g2">
+        <button class="btn btn-mint" id="del-status-cancel" onclick="cancelAccountDeletion()">Batalkan</button>
+        <button class="btn btn-ghost hidden" id="del-status-continue" onclick="continueAccountDeletion()">Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ov-edit-name" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div class="sh-title">Ubah Nama Tampilan</div>
+        <button class="sh-x" onclick="hide('ov-edit-name')">×</button>
+      </div>
+      <div class="srow"><label class="lbl">Nama yang Ingin Dipakai</label><input class="inp" id="en-name" type="text" placeholder="Nama panggilan kamu" maxlength="40"></div>
+      <button class="btn btn-gold" onclick="confirmEditName()">Simpan Nama</button>
+    </div>
+  </div>
+</div>
+
+<div id="ov-change-pw" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div class="sh-title">Ubah Password</div>
+        <button class="sh-x" onclick="hide('ov-change-pw')">×</button>
+      </div>
+      <div class="srow"><label class="lbl">Password Lama</label><input class="inp" id="cp-old" type="password" placeholder="••••••"></div>
+      <div class="srow"><label class="lbl">Password Baru</label><input class="inp" id="cp-new" type="password" placeholder="••••••"></div>
+      <div class="srow"><label class="lbl">Konfirmasi Baru</label><input class="inp" id="cp-new2" type="password" placeholder="••••••"></div>
+      <button class="btn btn-gold" onclick="doChangePw()">Simpan Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RECURRING MANAGER ── -->
+<div id="ov-recur-mgr" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div>
+          <div class="sh-title">Transaksi Berulang</div>
+          <div class="sh-sub">Dibuat otomatis sesuai jadwal</div>
+        </div>
+        <button class="sh-x" onclick="hide('ov-recur-mgr')">×</button>
+      </div>
+      <div id="recur-list" style="margin-bottom:12px;"></div>
+      <button class="btn btn-gold" onclick="openAddRecur()">＋ Tambah Transaksi Berulang</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RECURRING EDITOR ── -->
+<div id="ov-recur" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div class="sh-title" id="recur-title">Tambah Berulang</div>
+        <button class="sh-x" onclick="hide('ov-recur');show('ov-recur-mgr');">×</button>
+      </div>
+      <!-- Tipe -->
+      <div class="wp-type" style="margin-bottom:12px;">
+        <button id="r-keluar" class="wt-btn" onclick="setRecurType('keluar')">— Keluar</button>
+        <button id="r-masuk"  class="wt-btn on" onclick="setRecurType('masuk')">＋ Masuk</button>
+      </div>
+      <div class="srow"><label class="lbl">Keterangan</label><input class="inp" id="r-ket" type="text" placeholder="Gaji, Tagihan internet, dll..."></div>
+      <div class="srow"><label class="lbl">Jumlah (Rp)</label><input class="inp" id="r-nom" type="number" placeholder="0" inputmode="numeric"></div>
+      <div class="srow"><label class="lbl">Dompet</label><select class="inp" id="r-wallet"></select></div>
+      <div class="srow">
+        <label class="lbl">Kategori</label>
+        <select class="inp" id="r-cat"><option value="">— Pilih Kategori —</option>
+          <option value="makanan">🍜 Makanan</option>
+          <option value="transport">🚗 Transport</option>
+          <option value="belanja">🛍️ Belanja</option>
+          <option value="hiburan">🎮 Hiburan</option>
+          <option value="kesehatan">💊 Kesehatan</option>
+          <option value="pendidikan">📚 Pendidikan</option>
+          <option value="tagihan">💡 Tagihan</option>
+          <option value="modal">💼 Modal</option>
+          <option value="gaji">💰 Gaji</option>
+          <option value="lainnya">📦 Lainnya</option>
+        </select>
+      </div>
+      <div class="srow"><label class="lbl">Catatan (Opsional)</label><input class="inp" id="r-note" type="text" placeholder="Catatan tambahan..."></div>
+      <div class="srow">
+        <label class="lbl">Frekuensi</label>
+        <div class="chips" style="margin-bottom:0;">
+          <div class="chip" id="rf-daily"   onclick="setRecurFreq('daily')">Harian</div>
+          <div class="chip" id="rf-weekly"  onclick="setRecurFreq('weekly')">Mingguan</div>
+          <div class="chip on" id="rf-monthly" onclick="setRecurFreq('monthly')">Bulanan</div>
+          <div class="chip" id="rf-yearly"  onclick="setRecurFreq('yearly')">Tahunan</div>
+        </div>
+      </div>
+      <div class="srow" style="margin-top:10px;"><label class="lbl">Mulai Tanggal</label><input class="inp" id="r-start" type="date"></div>
+      <div class="g2" style="margin-bottom:8px;">
+        <button class="btn btn-gold" onclick="confirmRecur()">Simpan</button>
+        <button class="btn btn-ghost" onclick="hide('ov-recur');show('ov-recur-mgr');">Batal</button>
+      </div>
+      <button id="r-del" class="btn btn-rose hidden" onclick="deleteRecurFromEdit()">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CATEGORY DETAIL ── -->
+<div id="ov-cat-detail" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body">
+      <div class="sh-hd">
+        <div>
+          <div class="sh-title" id="cat-detail-title"></div>
+          <div class="sh-sub" id="cat-detail-total" style="color:var(--rose);font-weight:800;font-size:16px;"></div>
+        </div>
+        <button class="sh-x" onclick="hide('ov-cat-detail')">×</button>
+      </div>
+      <div id="cat-detail-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CUSTOM CONFIRM MODAL (replaces native confirm() for WebView/APK compat) ── -->
+<div id="ov-confirm" class="ov hidden">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-body" style="text-align:center;">
+      <div class="sh-title" id="confirm-title" style="margin-bottom:8px;">Konfirmasi</div>
+      <div style="font-size:13px;color:var(--dim);line-height:1.6;margin-bottom:18px;" id="confirm-msg"></div>
+      <div class="g2">
+        <button class="btn btn-ghost" onclick="_resolveConfirm(false)">Batal</button>
+        <button class="btn btn-rose" onclick="_resolveConfirm(true)">Ya, Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div id="toast">
+  <span id="toast-msg"></span>
+  <button id="toast-undo" onclick="doUndo()">Undo</button>
+</div>
+
+<!-- ══ JS MODULES ══ -->
+<!-- Firebase SDK (compat build — keeps global `firebase` namespace, matching this app's plain-script architecture) -->
+<script defer src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script defer src="js/firebase-config.js"></script>
+<script defer src="js/storage.js"></script>
+<script defer src="js/utils.js"></script>
+<script defer src="js/ui.js"></script>
+<script defer src="js/auth.js"></script>
+<script defer src="js/account-deletion.js"></script>
+<script defer src="js/beranda.js"></script>
+<script defer src="js/transaksi.js"></script>
+<script defer src="js/laporan.js"></script>
+<script defer src="js/utang.js"></script>
+<script defer src="js/recurring.js"></script>
+<script defer src="js/settings.js"></script>
+<script defer src="js/app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(console.error);
+  });
+}
+</script>
+</body>
+</html>
